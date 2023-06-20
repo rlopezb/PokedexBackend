@@ -8,6 +8,7 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import es.pokemon.pokedex.entity.Pokemon;
@@ -21,7 +22,12 @@ public class PomemonController {
 
   @GetMapping
   @CrossOrigin(origins = "http://localhost:3000")
-  Page<Pokemon> findAll(@SortDefault(sort = "id", direction = Sort.Direction.ASC) final Pageable pageable) {
-    return pokemonService.findAll(pageable);
+  Page<Pokemon> find(@SortDefault(sort = "id", direction = Sort.Direction.ASC) final Pageable pageable,
+      @RequestParam(required = false) String name) {
+    if (name == null) {
+      return pokemonService.findAll(pageable);
+    } else {
+      return pokemonService.findByNameContainingIgnoreCase(name, pageable);
+    }
   }
 }
